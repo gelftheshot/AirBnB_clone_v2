@@ -3,9 +3,9 @@ services:
   mysql:
     image: mysql:8.0
     volumes:
-      - ./setup_mysql_test.sql:/docker-entrypoint-initdb.d/setup_mysql_test.sql
+      - ./setup_mysql_dev.sql:/docker-entrypoint-initdb.d/setup_mysql_dev.sql
     environment:
       - MYSQL_ROOT_PASSWORD=root
-      - MYSQL_DATABASE=hbnb_test_db
-      - MYSQL_USER=hbnb_test
-      - MYSQL_PASSWORD=hbnb_test_pwd
+      - MYSQL_DATABASE=hbnb_dev_db
+      - MYSQL_USER=hbnb_dev
+      - MYSQL_PASSWORD=hbnb_dev_pwd
