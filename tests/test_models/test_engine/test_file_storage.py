@@ -41,6 +41,17 @@ class test_fileStorage(unittest.TestCase):
         temp = storage.all()
         self.assertIsInstance(temp, dict)
 
+    def test_all_with_cls_none(self):
+        """ Test all() method with cls=None """
+        temp = storage.all()
+        self.assertEqual(temp, storage._FileStorage__objects)
+
+    def test_all_with_cls(self):
+        """ Test all() method with cls specified """
+        new = BaseModel()
+        temp = storage.all(BaseModel)
+        self.assertEqual(temp, {'BaseModel.{}'.format(new.id): new})
+
     def test_base_model_instantiation(self):
         """ File is not created on BaseModel save """
         new = BaseModel()
@@ -107,3 +118,23 @@ class test_fileStorage(unittest.TestCase):
         from models.engine.file_storage import FileStorage
         print(type(storage))
         self.assertEqual(type(storage), FileStorage)
+
+    def test_delete_existing_obj(self):
+        """ Delete existing object from __objects """
+        new = BaseModel()
+        storage.save()
+        storage.delete(new)
+        self.assertNotIn('BaseModel.{}'.format(new.id), storage.all())
+
+    def test_delete_nonexistent_obj(self):
+        """ Delete nonexistent object from __objects """
+        new = BaseModel()
+        storage.save()
+        storage.delete(new)
+        self.assertNotIn('BaseModel.{}'.format(new.id), storage.all())
+
+    def test_delete_no_obj(self):
+        """ Delete no object from __objects """
+        storage.save()
+        storage.delete()
+        self.assertEqual(len(storage.all()), 0)
