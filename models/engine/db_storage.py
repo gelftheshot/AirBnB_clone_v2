@@ -38,10 +38,9 @@ class DBStorage:
             "User": User,
             "State": State,
             "City": City,
-            # TODO: Uncomment these when they are implemented
-            # "Amenity": Amenity,
+            "Amenity": Amenity,
             "Place": Place,
-            # "Review": Review,
+            "Review": Review,
         }
 
         new_dict = {}
