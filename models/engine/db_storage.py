@@ -35,13 +35,13 @@ class DBStorage:
     def all(self, cls=None):
         """query on the current database session"""
         classes = {
-            "BaseModel": BaseModel,
             "User": User,
             "State": State,
             "City": City,
-            "Amenity": Amenity,
-            "Place": Place,
-            "Review": Review,
+            # TODO: Uncomment these when they are implemented
+            # "Amenity": Amenity,
+            # "Place": Place,
+            # "Review": Review,
         }
 
         new_dict = {}
