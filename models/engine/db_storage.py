@@ -40,7 +40,7 @@ class DBStorage:
             "City": City,
             # TODO: Uncomment these when they are implemented
             # "Amenity": Amenity,
-            # "Place": Place,
+            "Place": Place,
             # "Review": Review,
         }
 
