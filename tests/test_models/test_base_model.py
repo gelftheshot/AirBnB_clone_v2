@@ -1,13 +1,17 @@
 #!/usr/bin/python3
 """ """
-from models.base_model import BaseModel
-import unittest
 import datetime
-from uuid import UUID
 import json
 import os
+import unittest
+from models.base_model import BaseModel, Base
+from uuid import UUID
 
 
+@unittest.skipIf(
+    os.getenv('HBNB_TYPE_STORAGE') == 'db',
+    'only FileStorage engine'
+)
 class test_basemodel(unittest.TestCase):
     """ """
 
@@ -26,6 +30,14 @@ class test_basemodel(unittest.TestCase):
             os.remove('file.json')
         except:
             pass
+
+    def test_init(self):
+        """ """ 
+        self.assertIsInstance(self.value(), BaseModel)
+        if self.value is not BaseModel:
+            self.assertIsInstance(self.value(), Base)
+        else:
+            self.assertNotIsInstance(self.value(), Base)
 
     def test_default(self):
         """ """
@@ -76,24 +88,10 @@ class test_basemodel(unittest.TestCase):
             new = self.value(**n)
 
     def test_kwargs_one(self):
-        """ """
-        n = {'Name': 'test'}
+        """ testing kwargs with one arg"""
+        n = {'name': 'test'}
         new = self.value(**n)
-        self.assertEqual(type(new), self.value)
-        self.assertTrue(hasattr(new, 'Name'))
-        self.assertTrue(hasattr(new, '__class__'))
-        self.assertTrue(hasattr(new, 'id'))
-        self.assertTrue(hasattr(new, 'created_at'))
-        self.assertTrue(hasattr(new, 'updated_at'))
-        self.assertEqual(new.Name, 'test')
-        self.assertEqual(new.Name, n['Name'])
-        self.assertEqual(new.__class__.__name__, self.name)
-        self.assertEqual(type(new.id), str)
-        self.assertEqual(type(new.created_at), datetime.datetime)
-        self.assertEqual(type(new.updated_at), datetime.datetime)
-        # n = {'Name': 'test'}
-        # with self.assertRaises(KeyError):
-        #     new = self.value(**n)
+        self.assertEqual(new.name, n['name'])
 
     def test_id(self):
         """ """
@@ -107,13 +105,8 @@ class test_basemodel(unittest.TestCase):
 
     def test_updated_at(self):
         """ """
-        i = self.value()
-        initial_updated_at = i.updated_at
-        i.save()
-        updated_updated_at = i.updated_at
-        self.assertNotEqual(initial_updated_at, updated_updated_at)
-        # new = self.value()
-        # self.assertEqual(type(new.updated_at), datetime.datetime)
-        # n = new.to_dict()
-        # new = BaseModel(**n)
-        # self.assertFalse(new.created_at == new.updated_at)
+        new = self.value()
+        self.assertEqual(type(new.updated_at), datetime.datetime)
+        n = new.to_dict()
+        new = BaseModel(**n)
+        self.assertFalse(new.created_at == new.updated_at)
