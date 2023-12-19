@@ -12,6 +12,7 @@ from sqlalchemy import create_engine
 
 
 class DBStorage:
+    """This class defines mysql storage engine"""
     __engine = None
     __session = None
 
