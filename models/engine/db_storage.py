@@ -16,21 +16,21 @@ class DBStorage:
     __session = None
 
     def __init__(self):
-            """Initializes a new instance of the DBStorage class."""
-            mysql_user = getenv("HBNB_MYSQL_USER")
-            mysql_pwd = getenv("HBNB_MYSQL_PWD")
-            mysql_host = getenv("HBNB_MYSQL_HOST")
-            mysql_db = getenv("HBNB_MYSQL_DB")
-            hbnb_env = getenv("HBNB_ENV")
-            self.__engine = create_engine(
-                "mysql+mysqldb://{}:{}@{}/{}".format(
-                    mysql_user, mysql_pwd, mysql_host, mysql_db
-                ),
-                pool_pre_ping=True,
-            )
+        """Initializes a new instance of the DBStorage class."""
+        mysql_user = getenv("HBNB_MYSQL_USER")
+        mysql_pwd = getenv("HBNB_MYSQL_PWD")
+        mysql_host = getenv("HBNB_MYSQL_HOST")
+        mysql_db = getenv("HBNB_MYSQL_DB")
+        hbnb_env = getenv("HBNB_ENV")
+        self.__engine = create_engine(
+            "mysql+mysqldb://{}:{}@{}/{}".format(
+                mysql_user, mysql_pwd, mysql_host, mysql_db
+            ),
+            pool_pre_ping=True,
+        )
 
-            if hbnb_env == "test":
-                Base.metadata.drop_all(self.__engine)
+        if hbnb_env == "test":
+            Base.metadata.drop_all(self.__engine)
 
     def all(self, cls=None):
         """query on the current database session"""

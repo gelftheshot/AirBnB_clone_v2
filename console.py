@@ -124,8 +124,8 @@ class HBNBCommand(cmd.Cmd):
         name_pattern = r'(?P<name>(?:[a-zA-Z]|_)(?:[a-zA-Z]|\d|_)*)'
         class_match = re.match(name_pattern, args)
         obj_kwargs = {}
-        class_name = self.__parse_class_name(args, name_pattern, class_match, obj_kwargs)
-
+        class_name = self.__parse_class_name(
+            args, name_pattern, class_match, obj_kwargs)
         if not class_name:
             print("** class name missing **")
             return
@@ -133,7 +133,6 @@ class HBNBCommand(cmd.Cmd):
             print("** class doesn't exist **")
             return
         self.__set_instance(ignored_attrs, class_name, obj_kwargs)
-
 
     def help_create(self):
         """ Help information for the create method """
@@ -238,7 +237,9 @@ class HBNBCommand(cmd.Cmd):
         print(count)
 
     def help_count(self):
-        """ """
+        """
+        help for count
+        """
         print("Usage: count <class_name>")
 
     def do_update(self, args):
@@ -331,6 +332,20 @@ class HBNBCommand(cmd.Cmd):
 
     @staticmethod
     def __set_instance(ignored_attrs, class_name, obj_kwargs):
+        """
+        Creates a new instance of the specified
+          class with the provided attributes.
+
+        Args:
+            ignored_attrs (list): A list of attribute names to ignore.
+            class_name (str): The name of the class to create an instance of.
+            obj_kwargs (dict): A dictionary of attribute names and values to
+              set on the new instance.
+
+        If the environment variable 'HBNB_TYPE_STORAGE'
+        is set to 'db', the method also sets 'id', 'created_at',
+        and 'updated_at' attributes on the new instance.
+        """
         if os.getenv('HBNB_TYPE_STORAGE') == 'db':
             if not hasattr(obj_kwargs, 'id'):
                 obj_kwargs['id'] = str(uuid.uuid4())
@@ -352,6 +367,22 @@ class HBNBCommand(cmd.Cmd):
 
     @staticmethod
     def __parse_class_name(args, name_pattern, class_match, obj_kwargs):
+        """
+        Parses the class name and parameters from the provided arguments.
+
+        Args:
+            args (str): The arguments to parse.
+            name_pattern (str): The pattern to use for matching the class name.
+            class_match (re.Match): The match object for the class name.
+            obj_kwargs (dict): A dictionary to store the parsed parameters.
+
+        Returns:
+            str: The parsed class name.
+
+        The method also parses the parameters from the arguments
+        and stores them in 'obj_kwargs'. The parameters can be of
+        type string, float, or int.
+        """
         if class_match is not None:
             class_name = class_match.group('name')
             params_str = args[len(class_name):].strip()
@@ -381,6 +412,7 @@ class HBNBCommand(cmd.Cmd):
         else:
             class_name = args
         return class_name
+
 
 if __name__ == "__main__":
     HBNBCommand().cmdloop()

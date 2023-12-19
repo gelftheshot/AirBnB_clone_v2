@@ -1,12 +1,13 @@
 #!/usr/bin/python3
-""" Place Module for HBNB project """
+"""
+Place Module for HBNB project
+"""
 import models
 from models.amenity import Amenity
 from models.base_model import BaseModel, Base
 from models.review import Review
 from sqlalchemy import Table, Column, String, Integer, Float, ForeignKey
 from sqlalchemy.orm import relationship
-
 
 if models.storage_type == "db":
     place_amenity = Table(
@@ -30,8 +31,9 @@ if models.storage_type == "db":
 
 
 class Place(BaseModel, Base):
-    """A place to stay"""
-
+    """
+    A place to stay
+    """
     __tablename__ = "places"
     if models.storage_type == "db":
         city_id = Column(String(60), ForeignKey("cities.id"), nullable=False)
@@ -68,7 +70,9 @@ class Place(BaseModel, Base):
 
         @property
         def reviews(self):
-            """ """
+            """
+            Getter for reviews associated with this place.
+            """
             review_list = []
             for review in models.storage.all(Review).values():
                 if review.place_id == self.id:
@@ -77,7 +81,9 @@ class Place(BaseModel, Base):
 
         @property
         def amenities(self):
-            """ """
+            """
+            Getter for amenities associated with this place.
+            """
             amenity_list = []
             for amenity in models.storage.all(Amenity).values():
                 if amenity.place_id == self.id:
@@ -86,6 +92,11 @@ class Place(BaseModel, Base):
 
         @amenities.setter
         def amenities(self, obj):
-            """ """
+            """
+            Setter for amenities. If the provided object
+            is an instance of Amenity
+            and its id is not already in the amenity_ids list,
+            it is added to the list.
+            """
             if isinstance(obj, Amenity) and obj.id not in self.amenity_ids:
                 self.amenity_ids.append(obj.id)
