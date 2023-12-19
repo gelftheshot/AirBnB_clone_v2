@@ -38,7 +38,7 @@ class BaseModel:
         else:
             for attr, value in kwargs.items():
                 if attr in ["created_at", "updated_at"]:
-                    value = datetime.strptime(value, "%Y-%m-%dT%H:%M:%S.%f")
+                    value = datetime.fromisoformat(value)
                 if attr != "__class__":
                     setattr(self, attr, value)
 
@@ -65,14 +65,21 @@ class BaseModel:
 
     def to_dict(self):
         """Convert instance into dict format"""
-        dictionary = {}
-        dictionary.update(self.__dict__)
-        dictionary.update({"__class__": (str(type(self)).split(".")[-1]).split("'")[0]})
-        dictionary["created_at"] = self.created_at.isoformat()
-        dictionary["updated_at"] = self.updated_at.isoformat()
-        if "_sa_instance_state" in dictionary.keys():
-            del dictionary["_sa_instance_state"]
-        return dictionary
+        dct = self.__dict__.copy()
+        dct['__class__'] = self.__class__.__name__
+        for k in dct:
+            if type(dct[k]) is datetime:
+                dct[k] = dct[k].isoformat()
+        if '_sa_instance_state' in dct.keys():
+            del(dct['_sa_instance_state'])
+        return dct
+        # dictionary = dict(self.__dict__)
+        # dictionary["__class__"] = str(type(self).__name__)
+        # dictionary["created_at"] = self.created_at.isoformat()
+        # dictionary["updated_at"] = self.updated_at.isoformat()
+        # if '_sa_instance_state' in dictionary.keys():
+        #     del dictionary['_sa_instance_state']
+        # return dictionary
 
     def delete(self):
         """deletes the current instance from the storage"""
