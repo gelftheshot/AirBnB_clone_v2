@@ -347,6 +347,7 @@ class HBNBCommand(cmd.Cmd):
                 if key not in ignored_attrs:
                     setattr(new_instance, key, value)
             new_instance.save()
+            storage.new(new_instance)
             print(new_instance.id)
 
     @staticmethod

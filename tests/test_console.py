@@ -98,44 +98,41 @@ class TestHBNBCommand(unittest.TestCase):
         """"
         """
         with patch("sys.stdout", new=StringIO()) as output:
-            self.HBNB.onecmd("create BaseModel name='gelfo'")
-            base_m = output.getvalue().strip()
-        # with patch("sys.stdout", new=StringIO()) as output:
-        #     self.HBNB.onecmd("all BaseModel")
-        #     self.assertIn(base_m, output.getvalue())
-        #     self.assertIn("'name': 'gelfo'", output.getvalue())
-        with patch("sys.stdout", new=StringIO()) as output:
-            self.HBNB.onecmd("create User email='exaple@gmail.com' password='1234' first_name='gelfeto' last_name='gebre'")
+            self.HBNB.onecmd("create User email=\"example@gmailcom\" password=\"1234\" first_name=\"gelfeto\" last_name=\"gebre\"")
             user = output.getvalue().strip()
         with patch("sys.stdout", new=StringIO()) as output:
             self.HBNB.onecmd("all User")
-            self.assertIn(user, output.getvalue())
-            self.assertIn("'email': 'exaple@gmail.com'", output.getvalue())
-            self.assertIn("'password': '1234'", output.getvalue())
-            self.assertIn("'first_name': 'gelfeto'", output.getvalue())
-            self.assertIn("'last_name': 'gebre'", output.getvalue())
+            output = output.getvalue().strip()
+            self.assertIn(user, output)
+            self.assertIn("'email': 'example@gmailcom'", output)
+            self.assertIn("'password': '1234'", output)
+            self.assertIn("'first_name': 'gelfeto'", output)
+            self.assertIn("'last_name': 'gebre'", output)
         with patch("sys.stdout", new=StringIO()) as output:
-            self.HBNB.onecmd("create State name='Amhara'")
+            self.HBNB.onecmd("create State name=\"Amhara\"")
             state = output.getvalue().strip()
         with patch("sys.stdout", new=StringIO()) as output:
             self.HBNB.onecmd("all State")
-            self.assertIn(state, output.getvalue())
-            self.assertIn("'name': 'Amhara'", output.getvalue())
+            output = output.getvalue().strip()
+            self.assertIn(state, output)
+            self.assertIn("'name': 'Amhara'", output)
         with patch("sys.stdout", new=StringIO()) as output: 
-            self.HBNB.onecmd("create City state_id='1234' name='Gonder'")
+            self.HBNB.onecmd("create City state_id=\"1234\" name=\"Gonder\"")
             city = output.getvalue().strip()
         with patch("sys.stdout", new=StringIO()) as output:
             self.HBNB.onecmd("all City")
-            self.assertIn(city, output.getvalue())
-            self.assertIn("'state_id': '1234'", output.getvalue())
-            self.assertIn("'name': 'Gonder'", output.getvalue())
+            output = output.getvalue().strip()
+            self.assertIn(city, output)
+            self.assertIn("'state_id': '1234'", output)
+            self.assertIn("'name': 'Gonder'", output)
         with patch("sys.stdout", new=StringIO()) as output:
-            self.HBNB.onecmd("create Amenity name='Wifi'")
+            self.HBNB.onecmd("create Amenity name=\"Wifi\"")
             amenity = output.getvalue().strip()
         with patch("sys.stdout", new=StringIO()) as output:
             self.HBNB.onecmd("all Amenity")
-            self.assertIn(amenity, output.getvalue())
-            self.assertIn("'name': 'Wifi'", output.getvalue())
+            output = output.getvalue().strip()
+            self.assertIn(amenity, output)
+            self.assertIn("'name': 'Wifi'", output)
         def generate_random_string(length):
             letters = string.ascii_letters
             return ''.join(random.choice(letters) for i in range(length))
@@ -153,29 +150,30 @@ class TestHBNBCommand(unittest.TestCase):
             latitude = random.uniform(-90, 90)
             longitude = random.uniform(-180, 180)
 
-            self.HBNB.onecmd(f"create Place city_id='1234' user_id='{user_id}' name='{name}' number_rooms='{number_rooms}' number_bathrooms='{number_bathrooms}' max_guest='{max_guest}' price_by_night='{price_by_night}' latitude='{latitude}' longitude='{longitude}'")
+            self.HBNB.onecmd(f"create Place city_id=\"1234\" user_id=\"{user_id}\" name=\"{name}\" number_rooms=\"{number_rooms}\" number_bathrooms=\"{number_bathrooms}\" max_guest=\"{max_guest}\" price_by_night=\"{price_by_night}\" latitude=\"{latitude}\" longitude=\"{longitude}\"")
             place = output.getvalue().strip()
 
         with patch("sys.stdout", new=StringIO()) as output:
             self.HBNB.onecmd("all Place")
-            self.assertIn(place, output.getvalue())
-            self.assertIn(f"'city_id': '1234'", output.getvalue())
-            self.assertIn(f"'user_id': '{user_id}'", output.getvalue())
-            self.assertIn(f"'name': '{name}'", output.getvalue())
-            self.assertIn(f"'number_rooms': '{number_rooms}'", output.getvalue())
-            self.assertIn(f"'number_bathrooms': '{number_bathrooms}'", output.getvalue())
-            self.assertIn(f"'max_guest': '{max_guest}'", output.getvalue())
-            self.assertIn(f"'price_by_night': '{price_by_night}'", output.getvalue())
-            self.assertIn(f"'latitude': '{latitude}'", output.getvalue())
-            self.assertIn(f"'longitude': '{longitude}'", output.getvalue())
+            output = output.getvalue().strip()
+            self.assertIn(place, output)
+            self.assertIn(f"'city_id': '1234'", output)
+            self.assertIn(f"'user_id': '{user_id}'", output)
+            self.assertIn(f"'name': '{name}'", output)
+            self.assertIn(f"'number_rooms': '{number_rooms}'", output)
+            self.assertIn(f"'number_bathrooms': '{number_bathrooms}'", output)
+            self.assertIn(f"'max_guest': '{max_guest}'", output)
+            self.assertIn(f"'price_by_night': '{price_by_night}'", output)
+            self.assertIn(f"'latitude': '{latitude}'", output)
+            self.assertIn(f"'longitude': '{longitude}'", output)
 
         with patch("sys.stdout", new=StringIO()) as output:
-            self.HBNB.onecmd("create Review place_id='1234' user_id='1234' text='what a place'")
+            self.HBNB.onecmd("create Review place_id=\"1234\" user_id=\"1234\" text=\"what_a_place\"")
             review = output.getvalue().strip()
         with patch("sys.stdout", new=StringIO()) as output:
             self.HBNB.onecmd("all Review")
-            self.assertIn(review, output.getvalue())
-            self.assertIn("'place_id': '1234'", output.getvalue())
-            self.assertIn("'user_id': '1234'", output.getvalue())
-            self.assertIn("'text': 'what a place'", output.getvalue())
-        
+            output = output.getvalue().strip()
+            self.assertIn(review, output)
+            self.assertIn("'place_id': '1234'", output)
+            self.assertIn("'user_id': '1234'", output)
+            self.assertIn("'text': 'what a place'", output)
