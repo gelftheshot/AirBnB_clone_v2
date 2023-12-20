@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 import unittest
-import models
+import os
 import MySQLdb
 from models.base_model import BaseModel
 from models.user import User
@@ -11,7 +11,6 @@ from models.review import Review
 from models.place import Place
 from models.base_model import Base
 from models.engine.db_storage import DBStorage
-from models.engine.file_storage import FileStorage
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm.session import Session
 from sqlalchemy.engine.base import Engine
@@ -20,11 +19,12 @@ from models.engine.db_storage import DBStorage
 class TestDBStorage(unittest.TestCase):
     """
     """
+
     @classmethod
     def setUpClass(cls):
         """DBStorage testing setup.
         """
-        if type(models.storage) == DBStorage:
+        if os.getenv('HBNB_TYPE_STORAGE') == 'db':
             cls.storage = DBStorage()
             Base.metadata.create_all(cls.storage._DBStorage__engine)
             Session = sessionmaker(bind=cls.storage._DBStorage__engine)
@@ -48,7 +48,7 @@ class TestDBStorage(unittest.TestCase):
     def tearDownClass(cls):
         """DBStorage testing teardown.
         """
-        if type(models.storage) == DBStorage:
+        if os.getenv('HBNB_TYPE_STORAGE') == 'db':
             cls.storage._DBStorage__session.delete(cls.state)
             cls.storage._DBStorage__session.delete(cls.city)
             cls.storage._DBStorage__session.delete(cls.user)
@@ -62,7 +62,8 @@ class TestDBStorage(unittest.TestCase):
             del cls.review
             cls.storage._DBStorage__session.close()
             del cls.storage
-    @unittest.skipIf(type(models.storage) == FileStorage,
+
+    @unittest.skipIf(os.getenv('HBNB_TYPE_STORAGE') != 'db', 
                      "Testing FileStorage")
     def test_if_methods_exist(self):
         """Test if class attributes exist.
@@ -74,7 +75,7 @@ class TestDBStorage(unittest.TestCase):
         self.assertTrue(hasattr(DBStorage, 'delete'))
         self.assertTrue(hasattr(DBStorage, 'reload'))
 
-    @unittest.skipIf(type(models.storage) == FileStorage,"Testing FileStorage")
+    @unittest.skipIf(os.getenv('HBNB_TYPE_STORAGE') != 'db', "Testing FileStorage")
     def test_init(self):
         """Test instantiation of DBStorage class.
         """
@@ -83,7 +84,7 @@ class TestDBStorage(unittest.TestCase):
         self.assertTrue(isinstance(self.storage._DBStorage__session, Session))
         self.assertTrue(self.storage._DBStorage__engine is not None)
         self.assertTrue(self.storage._DBStorage__session is not None)
-    @unittest.skipIf(type(models.storage) == FileStorage,"Testing FileStorage")
+    @unittest.skipIf(os.getenv('HBNB_TYPE_STORAGE') != 'db', "Testing FileStorage")
     def test_all(self):
         """
         testing db all method
@@ -91,7 +92,7 @@ class TestDBStorage(unittest.TestCase):
         new = self.storage.all()
         self.assertIsInstance(new, dict)
 
-    @unittest.skipIf(type(models.storage) == FileStorage,"Testing FileStorage")
+    @unittest.skipIf(os.getenv('HBNB_TYPE_STORAGE') != 'db', "Testing FileStorage")
     def test_new(self):
         """
         testing db new method
@@ -105,12 +106,12 @@ class TestDBStorage(unittest.TestCase):
         lis = list(self.storage._DBStorage__session.new)
         self.assertIn(obj, list)
 
-    @unittest.skipIf(type(models.storage) == FileStorage,"Testing FileStorage")
+    @unittest.skipIf(os.getenv('HBNB_TYPE_STORAGE') != 'db', "Testing FileStorage")
     def test_save_one_create(self):
         st = State(name="New_mexico")
         self.storage._DBStorage__session.add(st)
         self.storage.save()
-        db = MySQLdb.connect(user="hbnb_test@localhost",
+        db = MySQLdb.connect(user="hbnb_test",
                              passwd="hbnb_test_pwd",
                              db="hbnb_test_db")
         cursor = db.cursor()
@@ -120,14 +121,15 @@ class TestDBStorage(unittest.TestCase):
         self.assertEqual(st.id, query[0][0])
         cursor.close()
 
-    @unittest.skipIf(type(models.storage) == FileStorage,"Testing FileStorage")
+    @unittest.skipIf(os.getenv('HBNB_TYPE_STORAGE') != 'db', "Testing FileStorage")
     def test_save_two_create(self):
         """
         testing db save method
         """
-        db = MySQLdb.connect(user="hbnb_test@localhost",
+        db = MySQLdb.connect(user="hbnb_test",
                              passwd="hbnb_test_pwd",
-                             db="hbnb_test_db")
+                             db="hbnb_test_db",
+                             host="localhost")
         cursor = db.cursor()
         cursor.execute("SELECT COUNT(*) FROM states WHERE BINARY name = 'Virginia'")
         count_1 = cursor.fetchone()[0]
@@ -142,7 +144,7 @@ class TestDBStorage(unittest.TestCase):
         self.assertEqual(count_1 + 1, count_2)
 
         cursor.close()
-    @unittest.skipIf(type(models.storage) == FileStorage,"Testing FileStorage")
+    @unittest.skipIf(os.getenv('HBNB_TYPE_STORAGE') != 'db', "Testing FileStorage")
     def test_delete(self):
         """Test delete method."""
         new_york = State(name="New_York")
@@ -151,7 +153,7 @@ class TestDBStorage(unittest.TestCase):
         self.storage.delete(new_york)
         self.assertIn(new_york, list(self.storage._DBStorage__session.deleted))
 
-    @unittest.skipIf(type(models.storage) == FileStorage,
+    @unittest.skipIf(os.getenv('HBNB_TYPE_STORAGE') != 'db', 
                      "Testing FileStorage")
     def test_reload(self):
         """Test reload method."""
