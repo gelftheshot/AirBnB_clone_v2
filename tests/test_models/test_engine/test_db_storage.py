@@ -15,6 +15,7 @@ from models.engine.file_storage import FileStorage
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm.session import Session
 from sqlalchemy.engine.base import Engine
+from models.engine.db_storage import DBStorage
 
 class TestDBStorage(unittest.TestCase):
     """
@@ -23,25 +24,26 @@ class TestDBStorage(unittest.TestCase):
     def setUpClass(cls):
         """DBStorage testing setup.
         """
-        cls.storage = DBStorage()
-        Base.metadata.create_all(cls.storage._DBStorage__engine)
-        Session = sessionmaker(bind=cls.storage._DBStorage__engine)
-        cls.storage._DBStorage__session = Session()
-        cls.state = State(name="Texas")
-        cls.storage._DBStorage__session.add(cls.state)
-        cls.city = City(name="Dalas", state_id=cls.state.id)
-        cls.storage._DBStorage__session.add(cls.city)
-        cls.user = User(email="example@gmail.com", password="password")
-        cls.storage._DBStorage__session.add(cls.user)
-        cls.place = Place(city_id=cls.city.id, user_id=cls.user.id,
-                            name="Hotel")
-        cls.storage._DBStorage__session.add(cls.place)
-        cls.amenity = Amenity(name="Wifi")
-        cls.storage._DBStorage__session.add(cls.amenity)
-        cls.review = Review(place_id=cls.place.id, user_id=cls.user.id,
-                            text="Great_place_to_stay")
-        cls.storage._DBStorage__session.add(cls.review)
-        cls.storage._DBStorage__session.commit()
+        if type(models.storage) == DBStorage:
+            cls.storage = DBStorage()
+            Base.metadata.create_all(cls.storage._DBStorage__engine)
+            Session = sessionmaker(bind=cls.storage._DBStorage__engine)
+            cls.storage._DBStorage__session = Session()
+            cls.state = State(name="Texas")
+            cls.storage._DBStorage__session.add(cls.state)
+            cls.city = City(name="Dalas", state_id=cls.state.id)
+            cls.storage._DBStorage__session.add(cls.city)
+            cls.user = User(email="example@gmail.com", password="password")
+            cls.storage._DBStorage__session.add(cls.user)
+            cls.place = Place(city_id=cls.city.id, user_id=cls.user.id,
+                                name="Hotel")
+            cls.storage._DBStorage__session.add(cls.place)
+            cls.amenity = Amenity(name="Wifi")
+            cls.storage._DBStorage__session.add(cls.amenity)
+            cls.review = Review(place_id=cls.place.id, user_id=cls.user.id,
+                                text="Great_place_to_stay")
+            cls.storage._DBStorage__session.add(cls.review)
+            cls.storage._DBStorage__session.commit()
     @classmethod
     def tearDownClass(cls):
         """DBStorage testing teardown.
@@ -72,7 +74,7 @@ class TestDBStorage(unittest.TestCase):
         self.assertTrue(hasattr(DBStorage, 'delete'))
         self.assertTrue(hasattr(DBStorage, 'reload'))
 
-    @unittest.skipIf(type(models.storage) == DBStorage,"Testing FileStorage")
+    @unittest.skipIf(type(models.storage) == FileStorage,"Testing FileStorage")
     def test_init(self):
         """Test instantiation of DBStorage class.
         """
@@ -81,7 +83,7 @@ class TestDBStorage(unittest.TestCase):
         self.assertTrue(isinstance(self.storage._DBStorage__session, Session))
         self.assertTrue(self.storage._DBStorage__engine is not None)
         self.assertTrue(self.storage._DBStorage__session is not None)
-    @unittest.skipIf(type(models.storage) == DBStorage,"Testing FileStorage")
+    @unittest.skipIf(type(models.storage) == FileStorage,"Testing FileStorage")
     def test_all(self):
         """
         testing db all method
@@ -89,7 +91,7 @@ class TestDBStorage(unittest.TestCase):
         new = self.storage.all()
         self.assertIsInstance(new, dict)
 
-    @unittest.skipIf(type(models.storage) == DBStorage,"Testing FileStorage")
+    @unittest.skipIf(type(models.storage) == FileStorage,"Testing FileStorage")
     def test_new(self):
         """
         testing db new method
@@ -103,12 +105,12 @@ class TestDBStorage(unittest.TestCase):
         lis = list(self.storage._DBStorage__session.new)
         self.assertIn(obj, list)
 
-    @unittest.skipIf(type(models.storage) == DBStorage,"Testing FileStorage")
+    @unittest.skipIf(type(models.storage) == FileStorage,"Testing FileStorage")
     def test_save_one_create(self):
         st = State(name="New_mexico")
         self.storage._DBStorage__session.add(st)
         self.storage.save()
-        db = MySQLdb.connect(user="hbnb_test",
+        db = MySQLdb.connect(user="hbnb_test@localhost",
                              passwd="hbnb_test_pwd",
                              db="hbnb_test_db")
         cursor = db.cursor()
@@ -118,12 +120,12 @@ class TestDBStorage(unittest.TestCase):
         self.assertEqual(st.id, query[0][0])
         cursor.close()
 
-    @unittest.skipIf(type(models.storage) == DBStorage,"Testing FileStorage")
+    @unittest.skipIf(type(models.storage) == FileStorage,"Testing FileStorage")
     def test_save_two_create(self):
         """
         testing db save method
         """
-        db = MySQLdb.connect(user="hbnb_test",
+        db = MySQLdb.connect(user="hbnb_test@localhost",
                              passwd="hbnb_test_pwd",
                              db="hbnb_test_db")
         cursor = db.cursor()
@@ -140,7 +142,7 @@ class TestDBStorage(unittest.TestCase):
         self.assertEqual(count_1 + 1, count_2)
 
         cursor.close()
-    @unittest.skipIf(type(models.storage) == DBStorage,"Testing FileStorage")
+    @unittest.skipIf(type(models.storage) == FileStorage,"Testing FileStorage")
     def test_delete(self):
         """Test delete method."""
         new_york = State(name="New_York")
