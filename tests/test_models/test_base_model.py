@@ -5,13 +5,11 @@ import json
 import os
 import unittest
 from models.base_model import BaseModel, Base
+from models.engine.file_storage import FileStorage
 from uuid import UUID
 
 
-@unittest.skipIf(
-    os.getenv('HBNB_TYPE_STORAGE') == 'db',
-    'only FileStorage engine'
-)
+
 class test_basemodel(unittest.TestCase):
     """ """
 
@@ -20,6 +18,7 @@ class test_basemodel(unittest.TestCase):
         super().__init__(*args, **kwargs)
         self.name = 'BaseModel'
         self.value = BaseModel
+
 
     def setUp(self):
         """ """
@@ -58,7 +57,7 @@ class test_basemodel(unittest.TestCase):
         copy.update({1: 2})
         with self.assertRaises(TypeError):
             new = BaseModel(**copy)
-
+    @unittest.skipIf(os.getenv('HBNB_TYPE_STORAGE') == 'db', 'just file')
     def test_save(self):
         """ Testing save """
         i = self.value()
