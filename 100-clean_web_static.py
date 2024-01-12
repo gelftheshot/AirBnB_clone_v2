@@ -15,7 +15,8 @@ def do_clean(number=0):
     Cleans up old versions of the web static files.
 
     Args:
-        number (int): The number of versions to keep. If set to 0, all versions except the latest will be removed.
+        number (int): The number of versions to keep.
+        If set to 0, all versions except the latest will be removed.
 
     Returns:
         None
