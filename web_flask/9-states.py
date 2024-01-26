@@ -15,7 +15,7 @@ def states():
     """
     Retrieve all states from storage and render them in the template.
     """
-    states = storage.all("State")
+    states = storage.all("State").values()
     return render_template("9-states.html", state=states)
 
 
