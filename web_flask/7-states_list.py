@@ -16,7 +16,7 @@ def states_list():
     Retrieve a list of states from the storage and render them
     in a template.
     """
-    states = storage.all("State")
+    states = storage.all("State").values()
     return render_template("7-states_list.html", states=states)
 
 
