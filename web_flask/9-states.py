@@ -10,20 +10,24 @@ app = Flask(__name__)
 app.url_map.strict_slashes = False
 
 
-@app.route("/states", defaults={"id": None})
+@app.route("/states")
+def states():
+    """
+    Retrieve all states from storage and render them in the template.
+    """
+    states = storage.all("State")
+    return render_template("9-states.html", state=states)
+
+
 @app.route("/states/<id>")
-def states(id):
+def states_id(id):
     """
-    Display a HTML page with a list of states or a specific state
+    Retrieve a state by its ID and render the corresponding template.
     """
-    states = storage.all("State").values()
-    if id:
-        for state in states:
-            if state.id == id:
-                return render_template("9-states.html", state=state)
-        return render_template("9-states.html", state=None)
-    else:
-        return render_template("9-states.html", states=states)
+    for state in storage.all("State").values():
+        if state.id == id:
+            return render_template("9-states.html", state=state)
+    return render_template("9-states.html")
 
 
 @app.teardown_appcontext
