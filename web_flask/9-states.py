@@ -14,15 +14,16 @@ app.url_map.strict_slashes = False
 @app.route("/states/<id>")
 def states(id):
     """
-    Retrieve all states from storage or a specific state by id
-    and render them in the template.
+    Display a HTML page with a list of states or a specific state
     """
-    states = storage.all("State")
+    states = storage.all("State").values()
     if id:
-        state = states.get(id)
-        return render_template("9-states.html", state=state)
+        for state in states:
+            if state.id == id:
+                return render_template("9-states.html", state=state)
+        return render_template("9-states.html", state=None)
     else:
-        return render_template("9-states.html", state=states)
+        return render_template("9-states.html", states=states)
 
 
 @app.teardown_appcontext
