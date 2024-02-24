@@ -1,54 +1,56 @@
 #!/usr/bin/python3
 """
-Starts A Flask web application
+    intoducing a python flask with greating
 """
-from flask import Flask
 
-
+from flask import Flask, abort
 app = Flask(__name__)
-app.url_map.strict_slashes = False
 
 
-@app.route("/")
+@app.route("/", strict_slashes=False)
 def hello():
     """
-    Display Hello HBNB!
+    Returns a greeting message.
     """
     return "Hello HBNB!"
 
 
-@app.route("/hbnb")
-def hbnb():
+@app.route("/hbnb", strict_slashes=False)
+def just_hbnb():
     """
-    Display HBNB
+    return only hbnb
     """
     return "HBNB"
 
 
 @app.route("/c/<text>")
-def c(text):
+def c_is_fun(text):
     """
-    Display C followed by the value of the text variable
+    return c is <text>
     """
     return "C {}".format(text.replace("_", " "))
 
 
 @app.route("/python")
+@app.route("/python/")
 @app.route("/python/<text>")
-def python(text="is cool"):
+def python_is_cool(text="is cool"):
     """
-    Display Python followed by the value of the text variable
+    return python
     """
     return "Python {}".format(text.replace("_", " "))
 
 
-@app.route("/number/<int:n>")
-def number(n):
+@app.route("/number/<n>")
+def is_number(n):
     """
-    Display n is a number only if n is an integer
+    return if number
     """
-    return "{} is a number".format(n)
+    if n.isdigit() or isinstance(n, int):
+        return "{} is a number".format(n)
+    else:
+        abort(404)
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000)
+    app.run(host='0.0.0.0', port=5000)

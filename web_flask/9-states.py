@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 """
-Starts A Flask web application
+    return state from the flask file 
 """
 from models import storage
 from flask import Flask, render_template
@@ -11,23 +11,22 @@ app.url_map.strict_slashes = False
 
 
 @app.route("/states")
-def states():
+def states_list():
     """
-    Retrieve all states from storage and render them in the template.
+    Retrieve a list of states from the storage and render them
+    in a template.
     """
     states = storage.all("State").values()
-    return render_template("9-states.html", state=states)
-
+    return render_template("9-states.html", states=states)
 
 @app.route("/states/<id>")
-def states_id(id):
+def states_list_id(id):
     """
-    Retrieve a state by its ID and render the corresponding template.
+    list of a state object by a certain id
     """
-    for state in storage.all("State").values():
-        if state.id == id:
-            return render_template("9-states.html", state=state)
-    return render_template("9-states.html")
+    all_states = storage.all("State").values()
+    state = next((state for state in all_states if state.id == id), None)
+    return render_template("9-states.html", states=all_states, id=id, state=state)
 
 
 @app.teardown_appcontext
